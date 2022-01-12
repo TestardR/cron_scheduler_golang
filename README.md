@@ -19,7 +19,7 @@ They are 2 critical features to test:
 
 j.Schedule() function initializing cronjobs is hardly testable as cronjobs are long lasting tasks that require long lasting tests to properly tests, which I did not implement.
 
-However, I have tested nextTimeToRun function which holds the time computation to the next of our cronjobs, which is half of the critical feature to test.
+However, I have tested nextTimeToRun function which holds the time computation to the next of our cronjobs, which is half of the critical features to test.
 
 ```
 cronscheduler/internal/cron     0.028s  coverage: 66.2% of statements
