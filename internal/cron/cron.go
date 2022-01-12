@@ -55,7 +55,7 @@ func (j Job) Schedule(o Offset) error {
 
 	time.AfterFunc(duration(hour, minute, o), callback)
 
-	output := j.timeToNextRun(hour, minute, time.Now(), o)
+	output := j.timeToNextRun(hour, minute, o)
 
 	// log time not next run
 	fmt.Println(output)
@@ -63,24 +63,26 @@ func (j Job) Schedule(o Offset) error {
 	return nil
 }
 
-func (j Job) timeToNextRun(hour, minute int, currentTime time.Time, o Offset) string {
+func (j Job) timeToNextRun(hour, minute int, o Offset) string {
+	t := time.Now()
 	d := duration(hour, minute, o)
-	c := currentTime.Add(d)
-
-	day := "today"
-	if c.Day() != currentTime.Day() {
-		day = "tomorrow"
-	}
+	offsetTime := time.Date(t.Year(), t.Month(), t.Day(), o.hour, o.minute, 0, 0, t.Location())
+	c := offsetTime.Add(d)
 
 	timer, _ := time.Parse(timeFormat, fmt.Sprintf("%d:%d", hour, minute))
 	timeWithOffset := timer.Add(time.Hour*time.Duration(o.hour) + time.Minute*time.Duration(o.minute))
 
 	switch {
 	case runEveryTime(j.hour) && runEveryTime(j.minute) || runEveryTime(j.hour):
-		output := fmt.Sprintf("%d:%d %s - %s", timeWithOffset.Hour(), timeWithOffset.Minute(), day, j.cmd)
+		output := fmt.Sprintf("%d:%d today - %s", timeWithOffset.Hour(), timeWithOffset.Minute(), j.cmd)
 
 		return output
 	default:
+		day := "today"
+		if c.Day() != offsetTime.Day() {
+			day = "tomorrow"
+		}
+
 		output := fmt.Sprintf("%d:%d %s - %s", hour, minute, day, j.cmd)
 
 		return output

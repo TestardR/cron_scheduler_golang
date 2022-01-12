@@ -2,7 +2,6 @@ package cron
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -93,32 +92,6 @@ func TestParseJobToHourAndMinute(t *testing.T) {
 }
 
 func TestTimeToNextRun(t *testing.T) {
-	t.Run("should_output_today_if_offset_is_after_job", func(t *testing.T) {
-		job := Job{
-			hour:   "1",
-			minute: "30",
-			cmd:    "/bin/run_me_daily",
-		}
-		o := Offset{hour: 0, minute: 10}
-
-		output := job.timeToNextRun(1, 30, time.Now(), o)
-
-		assert.Equal(t, "1:30 today - /bin/run_me_daily", output)
-	})
-
-	t.Run("should_output_tomorrow_if_offset_is_before_job", func(t *testing.T) {
-		job := Job{
-			hour:   "1",
-			minute: "30",
-			cmd:    "/bin/run_me_daily",
-		}
-		o := Offset{hour: 2, minute: 10}
-
-		output := job.timeToNextRun(1, 30, time.Now(), o)
-
-		assert.Equal(t, "1:30 tomorrow - /bin/run_me_daily", output)
-	})
-
 	t.Run("should_output_the_right_message_case_1", func(t *testing.T) {
 		job := Job{
 			hour:   "1",
@@ -127,7 +100,7 @@ func TestTimeToNextRun(t *testing.T) {
 		}
 		o := Offset{hour: 16, minute: 10}
 
-		output := job.timeToNextRun(1, 30, time.Now(), o)
+		output := job.timeToNextRun(1, 30, o)
 
 		assert.Equal(t, "1:30 tomorrow - /bin/run_me_daily", output)
 	})
@@ -140,9 +113,9 @@ func TestTimeToNextRun(t *testing.T) {
 		}
 		o := Offset{hour: 16, minute: 10}
 
-		output := job.timeToNextRun(0, 45, time.Now(), o)
+		output := job.timeToNextRun(0, 45, o)
 
-		assert.Equal(t, "16:55 tomorrow - /bin/run_me_hourly", output)
+		assert.Equal(t, "16:55 today - /bin/run_me_hourly", output)
 	})
 
 	t.Run("should_output_the_right_message_case_3", func(t *testing.T) {
@@ -153,9 +126,9 @@ func TestTimeToNextRun(t *testing.T) {
 		}
 		o := Offset{hour: 16, minute: 10}
 
-		output := job.timeToNextRun(0, 0, time.Now(), o)
+		output := job.timeToNextRun(0, 0, o)
 
-		assert.Equal(t, "16:10 tomorrow - /bin/run_me_every_minute", output)
+		assert.Equal(t, "16:10 today - /bin/run_me_every_minute", output)
 	})
 
 	t.Run("should_output_the_right_message_case_4", func(t *testing.T) {
@@ -166,8 +139,8 @@ func TestTimeToNextRun(t *testing.T) {
 		}
 		o := Offset{hour: 16, minute: 10}
 
-		output := job.timeToNextRun(19, 0, time.Now(), o)
+		output := job.timeToNextRun(19, 0, o)
 
-		assert.Equal(t, "19:0 tomorrow - /bin/run_me_sixty_times", output)
+		assert.Equal(t, "19:0 today - /bin/run_me_sixty_times", output)
 	})
 }
