@@ -1,8 +1,17 @@
 ## To run the application
 
-Here is an example of commands you could run
+Install application dependencies with:
+```
+Make install
+```
+
+Then run the application:
 ```
 go run cmd/main.go -schedule="$(cat testdata/input.txt)" -offset=16:10
+```
+or run the binary (no need to install dependencies here):
+```
+./cronscheduler -schedule="$(cat testdata/input.txt)" -offset=16:10
 ```
 
 ## To run tests

@@ -3,3 +3,9 @@ test: ## Test
 
 lint: ## Lint
 	@golangci-lint run
+
+install: ## Download and install go mod
+	@go mod download
+
+build: ## Build App
+	go build ./cmd/main.go
